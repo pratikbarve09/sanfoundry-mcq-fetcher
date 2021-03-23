@@ -5,7 +5,7 @@ ch=input("do you want to enter sanfoundry site manually (yes/y/no/n) ?").lower()
 if(ch=="yes" or ch=='y'):
     next_link=input().strip()
 else:
-    next_link="https://www.sanfoundry.com/computer-networks-mcqs-basics/"
+    next_link="https://www.sanfoundry.com/computer-networks-mcqs-basics/" #sample site added
 while True:
     data=requests.get(next_link)
     soup=BeautifulSoup(data.content,'html5lib')
