@@ -1,20 +1,32 @@
 import requests
 from bs4 import BeautifulSoup
+import os
+import sys
 total_topics_fetched=0
+
 ch=input("do you want to enter sanfoundry site manually (yes/y/no/n) ?").lower()
 fetchall=input("do you want to fetch all next mcq (yes/y/no/n) ?").lower()#fetch specific page or list of pages
 
 if(ch=="yes" or ch=='y'):
-    next_link=input().strip()
+    next_link=input("enter site ").strip()
 else:
     next_link="https://www.sanfoundry.com/computer-networks-mcqs-basics/" #sample site added
 
 try:
+    if('mcq.txt' in os.listdir()):
+        print("already exists file with filename mcq.txt. Try renaming/deleting that file first")
+        sys.exit()
+    f=open('mcq.txt','w')
+    
     while True:
         data=requests.get(next_link)
         soup=BeautifulSoup(data.content,'html5lib')
         topic=soup.find('h1',attrs={'class':'entry-title'})
-        print("Topic is",topic.text)
+        if(topic is None):
+            print("something went wrong")
+            break
+        heading=topic.text
+        print("Topic:",heading)
         #print(soup.prettify())
         list_of_div=soup.find('div',attrs={'class':'entry-content'})
         #print(len(list_of_div))
@@ -30,14 +42,18 @@ try:
 
         #answers
         list_of_ans=soup.findAll('div',attrs={'class':'collapseomatic_content'})[:questions_total]
-        print(len(list_of_ans))
 
         '''for i in list_of_ans:
             print(i)'''
-
+        
+        f.write("\n\n\t\t"+heading+'\n\n')
+        print(heading)
         for i in range(questions_total):
-            print(questions[i].text)
-            print(list_of_ans[i].text)
+            currQuestion=questions[i].text
+            currAns=list_of_ans[i].text
+            f.write(currQuestion+'\n'+currAns+'\n\n')
+            #print(currQuestion)
+            #print(currAns)
 
         #increment topic fetched counter
         total_topics_fetched+=1
@@ -47,7 +63,7 @@ try:
         next_link_a=links[1]
         #print(next_link)
         link_tag=next_link_a.find('a')
-        print(link_tag)
+        #print(link_tag)
         if(link_tag is None):
             print("End")
             break
@@ -61,5 +77,6 @@ try:
 
             
     print("Total topics fetched",str(total_topics_fetched))
+
 except requests.exceptions.ConnectionError:
     print("Network Error")
