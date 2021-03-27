@@ -3,9 +3,10 @@ from bs4 import BeautifulSoup
 import os
 import sys
 total_topics_fetched=0
+total_question_fetched=0
 
 ch=input("do you want to enter sanfoundry site manually (yes/y/no/n) ?").lower()
-fetchall=input("do you want to fetch all next mcq (yes/y/no/n) ?").lower()#fetch specific page or list of pages
+fetchall=input("do you want to fetch all next topics to this (yes/y/no/n) ?").lower()#fetch specific page or list of pages
 
 if(ch=="yes" or ch=='y'):
     next_link=input("enter site ").strip()
@@ -49,6 +50,7 @@ try:
         f.write("\n\n\t\t"+heading+'\n\n')
         print(heading)
         for i in range(questions_total):
+            total_question_fetched+=1
             currQuestion=questions[i].text
             currAns=list_of_ans[i].text
             f.write(currQuestion+'\n'+currAns+'\n\n')
@@ -76,7 +78,7 @@ try:
             break
 
             
-    print("Total topics fetched",str(total_topics_fetched))
+    print(f'Total topics fetched are {total_topics_fetched} with total questions {total_question_fetched}')
 
 except requests.exceptions.ConnectionError:
     print("Network Error")
