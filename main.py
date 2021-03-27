@@ -5,6 +5,8 @@ import sys
 total_topics_fetched=0
 total_question_fetched=0
 
+error_question=dict()
+
 ch=input("do you want to enter sanfoundry site manually (yes/y/no/n) ?").lower()
 fetchall=input("do you want to fetch all next topics to this (yes/y/no/n) ?").lower()#fetch specific page or list of pages
 
@@ -17,7 +19,7 @@ try:
     if('mcq.txt' in os.listdir()):
         print("already exists file with filename mcq.txt. Try renaming/deleting that file first")
         sys.exit()
-    f=open('mcq.txt','w')
+    f=open('mcq.txt','wb')
     
     while True:
         data=requests.get(next_link)
@@ -47,13 +49,14 @@ try:
         '''for i in list_of_ans:
             print(i)'''
         
-        f.write("\n\n\t\t"+heading+'\n\n')
+        f.write("\n\n\t\t".encode()+heading.encode()+'\n\n'.encode())
         print(heading)
         for i in range(questions_total):
             total_question_fetched+=1
             currQuestion=questions[i].text
             currAns=list_of_ans[i].text
-            f.write(currQuestion+'\n'+currAns+'\n\n')
+            #print(currQuestion,currAns)
+            f.write(currQuestion.encode()+'\n'.encode()+currAns.encode()+'\n\n'.encode())
             #print(currQuestion)
             #print(currAns)
 
